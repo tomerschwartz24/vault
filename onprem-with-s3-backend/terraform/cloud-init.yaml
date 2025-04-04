@@ -1,0 +1,28 @@
+#cloud-config
+package_update: true
+package_upgrade: true
+packages:
+  - unzip
+  - curl
+
+runcmd:
+  - curl -fsSL https://apt.releases.hashicorp.com/gpg | sudo apt-key add -
+  - sudo apt-add-repository "deb [arch=amd64] https://apt.releases.hashicorp.com $(lsb_release -cs) main"
+  - sudo apt-get update && sudo apt-get install -y vault
+  - mkdir -p /etc/vault.d
+  - cat <<EOF | sudo tee /etc/vault.d/vault.hcl
+    storage "s3" {
+      bucket = "myvault-backend"
+      region = "eu-central-1"
+    }
+    
+    listener "tcp" {
+      address     = "0.0.0.0:8200"
+      tls_disable = 1
+    }
+
+    ui = true
+    EOF
+  - sudo systemctl enable vault
+  - sudo systemctl start vault
+~
