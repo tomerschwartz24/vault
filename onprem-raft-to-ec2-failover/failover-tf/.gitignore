@@ -6,3 +6,5 @@ terraform.tfstate.backup
 
 # remove this in your enviornment, terraform advise to commit the lock file into the git repository
 .terraform.lock.hcl 
+
+terraform.tfvars

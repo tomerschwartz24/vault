@@ -7,6 +7,14 @@ resource "aws_security_group" "ssh" {
   }
 }
 
+resource "aws_security_group" "vault" {
+  name        = "vault_port_access"
+  description = "Allow access in vault port"
+
+  tags = {
+    Name = "vault_access"
+  }
+}
 resource "aws_security_group" "outbound_all" {
   name        = "allow_outbound_traffic"
   description = "Allow egress traffic to everywhere"
@@ -16,12 +24,21 @@ resource "aws_security_group" "outbound_all" {
   }
 }
 
+
 resource "aws_vpc_security_group_ingress_rule" "allow_ssh" {
   security_group_id = aws_security_group.ssh.id
   cidr_ipv4         = var.ssh_sg_ingress_cidr
   from_port         = 22
   ip_protocol       = "tcp"
   to_port           = 22
+}
+
+resource "aws_vpc_security_group_ingress_rule" "allow_vault" {
+  security_group_id = aws_security_group.vault.id
+  cidr_ipv4         = var.ssh_sg_ingress_cidr
+  from_port         = 8200
+  ip_protocol       = "tcp"
+  to_port           = 8200
 }
 
 

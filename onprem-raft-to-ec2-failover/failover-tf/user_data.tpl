@@ -5,6 +5,23 @@ packages:
   - yum-utils
   - shadow-utils
 
+
+write_files:
+  - path: /etc/vault.d/vault.crt
+    permissions: '0644'
+    content: |
+      ${indent(6, vault_cert)}
+
+  - path: /etc/vault.d/vault.key
+    permissions: '0644'
+    content: |
+      ${indent(6, vault_key)}
+
+  - path: /etc/vault.d/vault.ca
+    permissions: '0644'
+    content: |
+      ${indent(6, vault_ca)}
+
 runcmd:
   - yum-config-manager --add-repo https://rpm.releases.hashicorp.com/AmazonLinux/hashicorp.repo
   - yum -y install vault
@@ -14,9 +31,11 @@ runcmd:
     cat <<EOF | sudo tee /etc/vault.d/vault.hcl
     listener "tcp" {
       address     = "0.0.0.0:8200"
-      tls_disable = true
+      tls_disable = false
+      tls_client_ca_file = "/etc/vault.d/vault-ca.crt"
+      tls_cert_file = "/etc/vault.d/vault.crt"
+      tls_key_file  = "/etc/vault.d/vault.key"
     }
-
     disable_mlock = true
 
     storage "raft" {
@@ -24,7 +43,7 @@ runcmd:
       node_id = "vault-1"
     }
 
-    api_addr = "http://127.0.0.1:8200"
+    api_addr = "${api_addr}"
     cluster_addr = "http://127.0.0.1:8201"
 
     ui = true

@@ -1,9 +1,22 @@
+data "template_file" "user_data" {
+  template = file("${path.module}/user_data.tpl")
+
+  vars = {
+    vault_ca   = file("${var.path_to_ca_crt}")
+    vault_cert = file("${var.path_to_crt}")
+    vault_key  = file("${var.path_to_key}")
+    api_addr   = var.vault_api_addr
+  }
+}
+
 resource "aws_instance" "vault" {
   ami           = var.ami
   instance_type = var.instance_type
-  user_data = file("user_data.yaml")
+  user_data = data.template_file.user_data.rendered
   key_name = aws_key_pair.vault_key.key_name
-  vpc_security_group_ids = [aws_security_group.ssh.id, aws_security_group.outbound_all.id]
+  vpc_security_group_ids = [aws_security_group.ssh.id,
+                            aws_security_group.vault.id,
+                            aws_security_group.outbound_all.id]
 
   
   tags = {
@@ -11,7 +24,6 @@ resource "aws_instance" "vault" {
   }
 
 }
-
 
 resource "tls_private_key" "vault_key" {
   algorithm = "RSA"

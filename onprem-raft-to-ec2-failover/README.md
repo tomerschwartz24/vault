@@ -25,3 +25,18 @@ After you applied the terraform configuration you can access the instance by acq
 
 4. ssh to the ec2 instance ```ssh -i vault.pem ec2-user@external_ip```
 -----------------------------------------------------------------------------------------------------------------------------------------------------------
+
+# Vault User-Data injection
+
+This solution assumes you have the certificates used in your production cluster ready to be bootstrapped into the failover node in order to allow TLS in the failover node.
+Its a security risk to bootstrap a none TLS vault (or anything else basically) in the cloud so there's no support for that in this configuration.
+
+set a ```terraform.tfvars``` file with path to your certs and ```api_addr``` of vault (should match the domain that has been set within the certificate) inject relevant details to the user-data which in turn allow cloud-init to bootstrap the vault node according to our needs : 
+
+```vault_api_addr      = "https://vault.mydomain.com:8200"```
+
+```path_to_ca_crt      = "/vault/vault.ca"```
+
+```path_to_crt         = "/vault/vault.crt"```
+
+```path_to_key         = "/vault/vault.key"```
