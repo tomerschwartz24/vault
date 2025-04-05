@@ -23,6 +23,8 @@ write_files:
       ${indent(6, vault_ca)}
 
 runcmd:
+  - latest_snapshot=$(aws s3 ls s3://${vault_snapshots_bucket}/  --recursive | sort | tail -n 1 | awk '{print $4}')
+  - aws s3 cp s3://${vault_snapshots_bucket}/$latest_snapshot /tmp
   - yum-config-manager --add-repo https://rpm.releases.hashicorp.com/AmazonLinux/hashicorp.repo
   - yum -y install vault
   - mkdir -p /etc/vault.d

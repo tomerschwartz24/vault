@@ -6,7 +6,7 @@ data "template_file" "user_data" {
     vault_ca      = file("${var.path_to_ca_crt}")
     vault_key     = file("${var.path_to_key}")
     api_addr      = var.vault_api_addr
-    s3_bucket     = var.vault_snapshots_bucket  # Added the bucket name to user_data
+    vault_snapshots_bucket     = var.vault_snapshots_bucket  # Added the bucket name to user_data
   }
 }
 
