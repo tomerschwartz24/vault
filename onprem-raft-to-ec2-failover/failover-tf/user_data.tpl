@@ -4,7 +4,7 @@ package_upgrade: true
 packages:
   - yum-utils
   - shadow-utils
-
+  - aws-cli
 
 write_files:
   - path: /etc/vault.d/vault.crt
