@@ -2,11 +2,10 @@ data "template_file" "user_data" {
   template = file("${path.module}/user_data.tpl")
 
   vars = {
-    vault_cert    = file("${var.path_to_crt}")
-    vault_ca      = file("${var.path_to_ca_crt}")
-    vault_key     = file("${var.path_to_key}")
-    api_addr      = var.vault_api_addr
-    vault_snapshots_bucket     = var.vault_snapshots_bucket
+    vault_tls_key           = file("${var.path_to_key}")
+    vault_tls_crt           = file("${var.path_to_crt}")
+    vault_snapshots_bucket  = var.vault_snapshots_bucket
+    vault_api_addr          = var.vault_api_addr
   }
 }
 resource "aws_instance" "vault" {

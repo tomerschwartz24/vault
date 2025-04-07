@@ -27,18 +27,19 @@ resource "aws_security_group" "outbound_all" {
 
 resource "aws_vpc_security_group_ingress_rule" "allow_ssh" {
   security_group_id = aws_security_group.ssh.id
-  cidr_ipv4         = var.ssh_sg_ingress_cidr
+  cidr_ipv4         = var.vault_allow_cidr
   from_port         = 22
   ip_protocol       = "tcp"
   to_port           = 22
 }
 
-resource "aws_vpc_security_group_ingress_rule" "allow_vault" {
-  security_group_id = aws_security_group.vault.id
-  cidr_ipv4         = var.ssh_sg_ingress_cidr
+resource "aws_security_group_rule" "allow_vault" {
+  type              = "ingress"
   from_port         = 8200
-  ip_protocol       = "tcp"
   to_port           = 8200
+  protocol          = "tcp"
+  cidr_blocks       = [var.vault_allow_cidr]
+  security_group_id = aws_security_group.vault.id
 }
 
 

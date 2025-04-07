@@ -18,9 +18,9 @@ variable "instance_name" {
   
 }
 
-variable "ssh_sg_ingress_cidr" {
+variable "vault_allow_cidr" {
     type = string
-    description = "cidr to allow access for into the vault instance via SSH (set it to your office network)"
+    description = "cidr to allow access for into the vault instance via SSH and vault port 8200 (set it to your office network)"
 }
 
 variable "keypair_name" {
@@ -32,8 +32,10 @@ variable "keypair_name" {
 
 variable "vault_api_addr" {
   type = string
-  description = "the ip address of the vault instance ( should match the domain provided during certs creation; e.g - https://vault.mydomain.com:8200)"
+  default = "127.0.0.1"
+  description = "the ip address of the vault instance ( should match the domain provided during certs creation; e.g - https://vault.mydomain.com:8200, if you have 127.0.0.1 configured within the certificate you can use the default.)"
 }
+
 variable "path_to_crt" {
     type = string
     description = "path to crt file (vault.crt) (must be pre-existing)"
